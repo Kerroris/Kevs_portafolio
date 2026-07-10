@@ -1,0 +1,170 @@
+.tel-legend {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.tel-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.tel-legend-item i {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+}
+
+.tel-legend-block {
+  background: var(--muted);
+}
+
+.tel-panels {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 22px;
+}
+
+.tel-panel {
+  padding: 22px;
+}
+
+.tel-panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.tel-channel {
+  font-size: 17px;
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tel-unit {
+  font-size: 10.5px;
+  letter-spacing: 0.26em;
+  color: var(--red);
+}
+
+/* Trazas de telemetría en movimiento */
+.tel-trace {
+  height: 52px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 32px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 13px),
+    #0e1014;
+  margin-bottom: 16px;
+}
+
+.tel-trace svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.tel-trace-scroll {
+  animation: tel-scroll linear infinite;
+}
+
+@keyframes tel-scroll {
+  to {
+    transform: translateX(-640px);
+  }
+}
+
+.tel-line {
+  fill: none;
+  stroke-width: 1.6;
+  vector-effect: non-scaling-stroke;
+}
+
+.tel-line-throttle {
+  stroke: var(--green);
+}
+
+.tel-line-brake {
+  stroke: var(--red);
+  opacity: 0.85;
+}
+
+.tel-line-speed {
+  stroke: var(--cyan);
+  opacity: 0.55;
+}
+
+/* Filas de tecnologías */
+.tel-list {
+  list-style: none;
+}
+
+.tel-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--line);
+}
+
+.tel-row:last-child {
+  border-bottom: 0;
+}
+
+.tel-name {
+  font-weight: 700;
+  font-size: 14.5px;
+}
+
+.tel-since {
+  font-size: 10.5px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+
+.tel-blocks {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.tel-blocks i {
+  width: 9px;
+  height: 13px;
+  display: inline-block;
+  transform: skewX(-12deg);
+}
+
+.tel-context {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  min-width: 82px;
+  text-align: right;
+}
+
+@media (max-width: 620px) {
+  .tel-row {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'name blocks'
+      'since context';
+    row-gap: 2px;
+  }
+  .tel-name { grid-area: name; }
+  .tel-since { grid-area: since; }
+  .tel-blocks { grid-area: blocks; justify-self: end; }
+  .tel-context { grid-area: context; }
+}
