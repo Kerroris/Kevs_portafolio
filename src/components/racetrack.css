@@ -74,8 +74,30 @@
   display: block;
 }
 
+/* En móvil la pista se dibuja más angosta y los carros a escala */
 @media (max-width: 899px) {
-  .rt-layer {
-    display: none;
+  .rt-svg {
+    opacity: 0.85;
+  }
+  .rt-shadow {
+    stroke-width: 46px;
+  }
+  .rt-kerb-base,
+  .rt-kerb-stripes {
+    stroke-width: 36px;
+  }
+  .rt-kerb-stripes {
+    stroke-dasharray: 18 18;
+  }
+  .rt-asphalt {
+    stroke-width: 29px;
+  }
+  .rt-centerline {
+    stroke-width: 2px;
+    stroke-dasharray: 10 14;
+  }
+  .rt-car-body {
+    width: 62px;
+    height: 29px;
   }
 }

@@ -110,13 +110,13 @@ export default function RaceTrack() {
     const container = layer?.parentElement
     if (!layer || !container) return
 
-    const mql = window.matchMedia('(min-width: 900px)')
     let debounce = 0
 
     // Estado del bucle de render
     let pathEl = null
     let pathLen = 0
     let targetProgress = 0
+    let trails = CARS.map((c) => c.trail)
     const shown = CARS.map(() => 0)
     let st = null
     let running = false
@@ -125,7 +125,7 @@ export default function RaceTrack() {
     const placeCar = (i) => {
       const car = carRefs.current[i]
       if (!car || !pathLen) return
-      let dist = shown[i] * pathLen - CARS[i].trail
+      let dist = shown[i] * pathLen - trails[i]
       if (dist < 0) dist = 0
       if (dist > pathLen) dist = pathLen
       const p = pathEl.getPointAtLength(dist)
@@ -158,14 +158,13 @@ export default function RaceTrack() {
       const cars = carRefs.current.filter(Boolean)
       if (!svg || !cars.length) return
 
-      if (!mql.matches) {
-        layer.style.display = 'none'
-        return
-      }
-      layer.style.display = ''
-
       const width = container.clientWidth
       const height = container.scrollHeight
+      if (!width) return
+
+      // En pantallas angostas los carros son más chicos: acorta la separación
+      const trailScale = width < 900 ? 0.62 : 1
+      trails = CARS.map((c) => c.trail * trailScale)
       svg.setAttribute('width', width)
       svg.setAttribute('height', height)
       svg.setAttribute('viewBox', `0 0 ${width} ${height}`)
@@ -227,21 +226,17 @@ export default function RaceTrack() {
     const ro = new ResizeObserver(rebuild)
     ro.observe(container)
 
-    // Reconstruye al cruzar el breakpoint y cuando la pestaña vuelve a ser visible
+    // Reconstruye cuando la pestaña vuelve a ser visible
     // (si cargó en segundo plano, el primer layout puede haber sido incorrecto)
     const onVisible = () => {
       if (!document.hidden) rebuild()
     }
-    if (mql.addEventListener) mql.addEventListener('change', rebuild)
-    else mql.addListener(rebuild)
     document.addEventListener('visibilitychange', onVisible)
 
     return () => {
       window.clearTimeout(initial)
       window.clearTimeout(debounce)
       ro.disconnect()
-      if (mql.removeEventListener) mql.removeEventListener('change', rebuild)
-      else mql.removeListener(rebuild)
       document.removeEventListener('visibilitychange', onVisible)
       stopLoop()
     }

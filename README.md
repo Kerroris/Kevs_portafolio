@@ -8,7 +8,7 @@ Portafolio personal de **Kevin Brian Castillo Mejía** (Software Developer / Bac
 - **Tema claro y oscuro**: botón de sol/luna en el HUD (también se guarda la preferencia).
 - **Tres carros en pista** con distinta inercia de scroll: al acelerar el scroll el grupo se estira, al frenar se compactan como en un relanzamiento.
 - HUD fijo con sector actual, progreso de carrera, velocidad (derivada de la velocidad real del scroll) y marcha.
-- `prefers-reduced-motion` respetado; móvil optimizado (pista oculta bajo 900px).
+- `prefers-reduced-motion` respetado; en móvil la pista y los carros se dibujan a escala reducida.
 
 ## Stack
 
