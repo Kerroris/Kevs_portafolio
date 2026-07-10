@@ -18,7 +18,7 @@ const CARS = [
   { number: profile.racingNumber, trail: 0, smooth: 0.18, livery: null },
   {
     number: '08',
-    trail: 82,
+    trail: 170,
     smooth: 0.12,
     livery: {
       body: '#1b2027',
@@ -32,7 +32,7 @@ const CARS = [
   },
   {
     number: '27',
-    trail: 164,
+    trail: 340,
     smooth: 0.085,
     livery: {
       body: '#b6bdc7',
