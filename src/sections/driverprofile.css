@@ -75,6 +75,9 @@
 .driver-summary {
   margin-top: 22px;
   color: var(--muted);
+  background: rgba(11, 13, 16, 0.88);
+  border-left: 3px solid var(--line);
+  padding: 14px 18px;
 }
 
 .driver-stats {
