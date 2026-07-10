@@ -3,7 +3,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import useReducedMotion from '../hooks/useReducedMotion.js'
 import { useLang } from '../i18n.jsx'
-import { sectors } from '../data/profile.js'
+import { sectors, profile } from '../data/profile.js'
 import './hud.css'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -80,7 +80,7 @@ export default function Hud({ sectorIndex }) {
   return (
     <header className="hud" role="banner">
       <div className="hud-left">
-        <span className="hud-num">KBC-74</span>
+        <span className="hud-num">{profile.chassis}</span>
         <span className="hud-divider" />
         <span className="hud-sector" key={sectorIndex}>
           <span className="hud-sector-idx">

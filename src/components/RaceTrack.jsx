@@ -1,23 +1,25 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
 import RaceCar from './RaceCar.jsx'
+import { profile } from '../data/profile.js'
 import useReducedMotion from '../hooks/useReducedMotion.js'
 import './racetrack.css'
 
-gsap.registerPlugin(ScrollTrigger, MotionPathPlugin)
+gsap.registerPlugin(ScrollTrigger)
 
-// Parrilla: el KBC-74 lidera; lo persiguen un carro negro y uno plateado.
-// dx/dy separan cada carro de la línea ideal (en coordenadas locales del carro)
-// y el scrub más lento hace que los rivales se queden atrás al acelerar.
+// Parrilla: el líder (número del piloto) va al frente; lo persiguen un carro
+// negro y uno plateado. Los tres siguen EXACTAMENTE la misma curva; sólo se
+// separan por distancia a lo largo de la pista (`trail`, en px de recorrido),
+// así nunca se salen del carril ni en las curvas. `smooth` controla qué tan
+// rápido cada carro alcanza al scroll: menor = más inercia, el grupo se estira
+// al acelerar y se reagrupa al frenar.
 const CARS = [
-  { number: '74', scrub: 0.5, dx: 0, dy: 0, livery: null },
+  { number: profile.racingNumber, trail: 0, smooth: 0.18, livery: null },
   {
     number: '08',
-    scrub: 1.05,
-    dx: -96,
-    dy: 12,
+    trail: 82,
+    smooth: 0.12,
     livery: {
       body: '#1b2027',
       pods: '#10141a',
@@ -30,9 +32,8 @@ const CARS = [
   },
   {
     number: '27',
-    scrub: 1.6,
-    dx: -188,
-    dy: -12,
+    trail: 164,
+    smooth: 0.085,
     livery: {
       body: '#b6bdc7',
       pods: '#828b96',
@@ -110,19 +111,49 @@ export default function RaceTrack() {
     if (!layer || !container) return
 
     const mql = window.matchMedia('(min-width: 900px)')
-    let tweens = []
     let debounce = 0
 
-    const teardown = () => {
-      tweens.forEach((t) => {
-        t.scrollTrigger?.kill()
-        t.kill()
-      })
-      tweens = []
+    // Estado del bucle de render
+    let pathEl = null
+    let pathLen = 0
+    let targetProgress = 0
+    const shown = CARS.map(() => 0)
+    let st = null
+    let running = false
+
+    // Coloca un carro a `dist` px del recorrido, orientado según la tangente
+    const placeCar = (i) => {
+      const car = carRefs.current[i]
+      if (!car || !pathLen) return
+      let dist = shown[i] * pathLen - CARS[i].trail
+      if (dist < 0) dist = 0
+      if (dist > pathLen) dist = pathLen
+      const p = pathEl.getPointAtLength(dist)
+      const p2 = pathEl.getPointAtLength(Math.min(pathLen, dist + 2))
+      const angle = (Math.atan2(p2.y - p.y, p2.x - p.x) * 180) / Math.PI
+      car.style.transform = `translate(${p.x}px, ${p.y}px) rotate(${angle}deg)`
+    }
+
+    const tick = () => {
+      for (let i = 0; i < CARS.length; i++) {
+        shown[i] += (targetProgress - shown[i]) * CARS[i].smooth
+        placeCar(i)
+      }
+    }
+
+    const stopLoop = () => {
+      if (running) {
+        gsap.ticker.remove(tick)
+        running = false
+      }
+      if (st) {
+        st.kill()
+        st = null
+      }
     }
 
     const build = () => {
-      teardown()
+      stopLoop()
       const svg = svgRef.current
       const cars = carRefs.current.filter(Boolean)
       if (!svg || !cars.length) return
@@ -148,35 +179,35 @@ export default function RaceTrack() {
         cars.forEach((car) => gsap.set(car, { autoAlpha: 0 }))
         return
       }
+      cars.forEach((car) => gsap.set(car, { autoAlpha: 1 }))
 
-      const pathEl = svg.querySelector('#rt-main-path')
-      // El scrub termina cuando la meta está a media pantalla, para que el
+      pathEl = svg.querySelector('#rt-main-path')
+      pathLen = pathEl.getTotalLength()
+
+      // El recorrido termina cuando la meta llega a media pantalla, para que el
       // cruce de la línea ocurra dentro del viewport
       const endScroll = Math.max(
         window.innerHeight,
         points[points.length - 1].y - window.innerHeight * 0.55
       )
-      cars.forEach((car, i) => {
-        gsap.set(car, { autoAlpha: 1 })
-        tweens.push(
-          gsap.to(car, {
-            motionPath: {
-              path: pathEl,
-              align: pathEl,
-              alignOrigin: [0.5, 0.5],
-              autoRotate: true,
-            },
-            ease: 'none',
-            immediateRender: true,
-            scrollTrigger: {
-              trigger: container,
-              start: 'top top',
-              end: endScroll,
-              scrub: CARS[i].scrub,
-            },
-          })
-        )
+
+      st = ScrollTrigger.create({
+        trigger: container,
+        start: 'top top',
+        end: endScroll,
+        onUpdate: (self) => {
+          targetProgress = self.progress
+        },
       })
+      // Arranca ya alineado con la posición actual de scroll
+      targetProgress = st.progress
+      for (let i = 0; i < CARS.length; i++) {
+        shown[i] = targetProgress
+        placeCar(i)
+      }
+
+      gsap.ticker.add(tick)
+      running = true
     }
 
     const rebuild = () => {
@@ -212,7 +243,7 @@ export default function RaceTrack() {
       if (mql.removeEventListener) mql.removeEventListener('change', rebuild)
       else mql.removeListener(rebuild)
       document.removeEventListener('visibilitychange', onVisible)
-      teardown()
+      stopLoop()
     }
   }, [reduced])
 
@@ -236,10 +267,7 @@ export default function RaceTrack() {
           className="rt-car"
           style={{ zIndex: CARS.length - i }}
         >
-          <div
-            className="rt-car-body"
-            style={{ transform: `translate(${car.dx}px, ${car.dy}px)` }}
-          >
+          <div className="rt-car-body">
             <RaceCar className="rt-car-svg" number={car.number} livery={car.livery} />
           </div>
         </div>

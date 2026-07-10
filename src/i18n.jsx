@@ -19,7 +19,7 @@ export const ui = {
     specChassis: 'Chasis',
     offTrack: 'Fuera de pista',
 
-    telTitle: { pre: 'Telemetría del ', em: 'KBC-74', post: '' },
+    telTitle: { pre: 'Telemetría del ', em: 'KBC-02', post: '' },
     telDesc:
       'Sin porcentajes inventados: cada tecnología muestra desde cuándo está en el stint y en qué contexto se ha usado de verdad.',
     yearBlock: '= 1 año en pista',
@@ -72,7 +72,7 @@ export const ui = {
     specChassis: 'Chassis',
     offTrack: 'Off track',
 
-    telTitle: { pre: '', em: 'KBC-74', post: ' telemetry' },
+    telTitle: { pre: '', em: 'KBC-02', post: ' telemetry' },
     telDesc:
       'No made-up percentages: every technology shows how long it has been in the stint and the context where it has actually been used.',
     yearBlock: '= 1 year on track',

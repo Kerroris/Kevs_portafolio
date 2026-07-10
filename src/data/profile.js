@@ -22,13 +22,13 @@ export const profile = {
     es: 'Backend, APIs REST y arquitectura de sistemas',
     en: 'Backend, REST APIs and system architecture',
   },
-  racingNumber: '74',
-  chassis: 'KBC-74',
+  racingNumber: '02',
+  chassis: 'KBC-02',
   email: 'kerroris@gmail.com',
   github: 'https://github.com/Kerroris',
   linkedin: 'https://www.linkedin.com/in/kerroris',
   // [REEMPLAZAR] Coloca tu foto en public/driver.jpg y cambia esta ruta a '/driver.jpg'
-  photo: '/driver-placeholder.svg',
+  photo: '/kkeevviinn.jpeg',
   summary: {
     es:
       'Desarrollador de software con experiencia en desarrollo web y backend. ' +
