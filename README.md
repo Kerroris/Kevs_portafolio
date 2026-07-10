@@ -1,6 +1,14 @@
 # Kevin Castillo — Portafolio
 
-Portafolio personal de **Kevin Brian Castillo Mejía** (Software Developer / Backend Developer) con temática de automovilismo: el scroll recorre una carrera completa, con parrilla de salida, semáforo, pista SVG que serpentea por todo el documento, un monoplaza original (**KBC-74**) que la recorre, telemetría, grandes premios por proyecto y bandera a cuadros en la meta.
+Portafolio personal de **Kevin Brian Castillo Mejía** (Software Developer / Backend Developer) con temática de automovilismo: el scroll recorre una carrera completa, con parrilla de salida, semáforo, pista SVG que serpentea por todo el documento, tres monoplazas originales que la recorren (el **KBC-74** rojo al frente, perseguido por un carro negro y uno plateado), telemetría, grandes premios por proyecto y bandera a cuadros en la meta.
+
+## Características
+
+- **Bilingüe**: todo el contenido en español e inglés, con selector ES/EN en el HUD (se guarda la preferencia).
+- **Tema claro y oscuro**: botón de sol/luna en el HUD (también se guarda la preferencia).
+- **Tres carros en pista** con distinta inercia de scroll: al acelerar el scroll el grupo se estira, al frenar se compactan como en un relanzamiento.
+- HUD fijo con sector actual, progreso de carrera, velocidad (derivada de la velocidad real del scroll) y marcha.
+- `prefers-reduced-motion` respetado; móvil optimizado (pista oculta bajo 900px).
 
 ## Stack
 
@@ -13,16 +21,17 @@ Portafolio personal de **Kevin Brian Castillo Mejía** (Software Developer / Bac
 
 ```
 src/
-  data/profile.js        <- TODO el contenido editable (textos, proyectos, skills)
+  data/profile.js        <- TODO el contenido editable (textos ES/EN, proyectos, skills, links)
+  i18n.jsx               <- Textos de interfaz ES/EN y proveedor de idioma
   components/
-    Hud.jsx              <- HUD fijo: sector, progreso, velocidad, marcha
-    RaceTrack.jsx        <- Pista SVG generada por JS + carro con MotionPath
-    RaceCar.jsx          <- SVG original del monoplaza
+    Hud.jsx              <- HUD fijo: sector, progreso, velocidad, idioma y tema
+    RaceTrack.jsx        <- Pista SVG generada por JS + 3 carros con MotionPath
+    RaceCar.jsx          <- SVG original del monoplaza (acepta liverys de color)
   sections/
     StartingGrid.jsx     <- Hero con semáforo de salida
-    DriverProfile.jsx    <- Ficha de piloto
+    DriverProfile.jsx    <- Ficha de piloto + intereses personales
     Telemetry.jsx        <- Skills como telemetría (sin porcentajes falsos)
-    GrandsPrix.jsx       <- Proyectos como grandes premios con circuito propio
+    GrandsPrix.jsx       <- Proyectos como grandes premios con circuito, links e imagen
     RaceHistory.jsx      <- Experiencia como temporadas
     Academy.jsx          <- Educación como licencias
     FinishLine.jsx       <- Contacto con bandera a cuadros
@@ -64,14 +73,16 @@ vercel
 | Qué | Dónde |
 |-----|-------|
 | **Tu foto** | Guarda tu foto como `public/driver.jpg` (idealmente ~600px de ancho, recortada 5:6) y en `src/data/profile.js` cambia `photo: '/driver-placeholder.svg'` por `photo: '/driver.jpg'` |
-| **Imagen Open Graph** | Reemplaza `public/og-image.png` por una captura del hero (1200×630) para que el link se vea bien en redes |
+| **Links de cada proyecto** | En `src/data/profile.js` → `projects[n].links`: pon la URL en `live` (sistema en línea) y/o `repo` (GitHub). Si se quedan `''` no se muestra ningún botón |
+| **Imágenes de cada proyecto** | Crea la carpeta `public/projects/`, coloca tus capturas y pon la ruta en `projects[n].image`, p. ej. `'/projects/cobranza.png'`. Si se queda `''` no se muestra nada |
+| **Imagen Open Graph** | Reemplaza `public/og-image.png` por una captura del hero (1200×630) |
 | **Años "since" de cada skill** | En `src/data/profile.js` → `skills`. Son estimados a partir de tu CV; ajusta los que no coincidan |
 | **Vueltas / longitud de cada GP** | En `src/data/profile.js` → `projects` (`laps`, `length`) son datos decorativos; cámbialos si quieres |
 | **Dominio canónico** | Cuando tengas dominio, agrega `<link rel="canonical" href="https://tudominio.com" />` en `index.html` y actualiza las URLs de `og:image` a absolutas |
 
 ## Notas de contenido
 
+- Los textos bilingües viven como objetos `{ es: '…', en: '…' }` en `src/data/profile.js`; los rótulos de interfaz en `src/i18n.jsx`. Para editar un texto, cambia ambos idiomas.
 - El formulario de contacto no tiene backend: arma un `mailto:` hacia `kerroris@gmail.com` con lo que escriba el visitante. Si luego quieres envío real, conecta un servicio tipo Formspree y cambia `onSubmit` en `src/sections/FinishLine.jsx`.
 - El nivel de inglés está como **B2** (así se pidió para el portafolio; el CV dice B1 — unifica el que corresponda en `src/data/profile.js`).
-- Accesibilidad: se respeta `prefers-reduced-motion` (sin carro animado ni parallax; el contenido queda visible y estático).
-- En pantallas menores a 900px la pista de fondo se oculta y queda la experiencia optimizada: HUD con progreso, semáforo, circuitos por proyecto y animaciones de aparición.
+- Los carros rivales (negro #08 y plata #27) se configuran en `src/components/RaceTrack.jsx` (constante `CARS`): colores, números, separación y retraso de scrub.

@@ -133,16 +133,16 @@
 
 .grid-slot {
   height: 26px;
-  border-left: 4px solid rgba(238, 240, 243, 0.75);
-  border-top: 4px solid rgba(238, 240, 243, 0.75);
+  border-left: 4px solid var(--outline-strong);
+  border-top: 4px solid var(--outline-strong);
   width: 58%;
 }
 
 .grid-slot:nth-child(2) {
   align-self: flex-end;
   border-left: 0;
-  border-right: 4px solid rgba(238, 240, 243, 0.45);
-  border-top: 4px solid rgba(238, 240, 243, 0.45);
+  border-right: 4px solid var(--outline-soft);
+  border-top: 4px solid var(--outline-soft);
 }
 
 .grid-slot:nth-child(3) {

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { projects } from '../data/profile.js'
+import { useLang, pick } from '../i18n.jsx'
 import useReducedMotion from '../hooks/useReducedMotion.js'
 import './grandsprix.css'
 
@@ -33,6 +34,7 @@ function CircuitMap({ shape, round }) {
 export default function GrandsPrix() {
   const rootRef = useRef(null)
   const reduced = useReducedMotion()
+  const { lang, t } = useLang()
 
   // Dibuja cada circuito cuando entra al viewport
   useEffect(() => {
@@ -60,51 +62,79 @@ export default function GrandsPrix() {
           <span className="sec-num">S3</span> Grands Prix
         </div>
         <h2 className="sec-title" data-reveal>
-          Calendario de <em>proyectos</em>
+          {t.projTitle.pre}
+          <em>{t.projTitle.em}</em>
+          {t.projTitle.post}
         </h2>
         <p className="sec-desc" data-reveal>
-          Tres grandes premios: sistemas reales, en producción, con usuarios que los
-          exigen todos los días.
+          {t.projDesc}
         </p>
       </div>
 
       <div className="gp-list">
         {projects.map((p) => (
           <article className="gp" key={p.round} data-reveal>
-            <CircuitMap shape={p.circuit} round={p.round} />
+            <div className="gp-visual">
+              <CircuitMap shape={p.circuit} round={p.round} />
+              {p.image && (
+                <figure className="gp-shot">
+                  <img src={p.image} alt={pick(p.title, lang)} loading="lazy" />
+                </figure>
+              )}
+            </div>
 
             <div className="gp-info">
               <p className="gp-name mono">
-                ROUND {p.round} — {p.gpName.toUpperCase()}
+                ROUND {p.round} — {pick(p.gpName, lang).toUpperCase()}
               </p>
-              <h3 className="gp-title">{p.title}</h3>
+              <h3 className="gp-title">{pick(p.title, lang)}</h3>
 
               <div className="gp-meta mono">
-                <span>{p.role}</span>
+                <span>{pick(p.role, lang)}</span>
                 <span className="gp-meta-dot" />
                 <span>
-                  {p.laps} vueltas · {p.length}
+                  {p.laps} {t.laps} · {p.length}
                 </span>
               </div>
 
-              <p className="gp-desc">{p.description}</p>
+              <p className="gp-desc">{pick(p.description, lang)}</p>
 
               <div className="gp-setup">
                 <span className="gp-setup-label mono">Setup</span>
                 <div className="gp-stack">
-                  {p.stack.map((t) => (
-                    <span className="chip" key={t}>
-                      {t}
+                  {p.stack.map((tech) => (
+                    <span className="chip" key={tech}>
+                      {tech}
                     </span>
                   ))}
                 </div>
               </div>
 
               <ul className="gp-notes">
-                {p.notes.map((n) => (
+                {pick(p.notes, lang).map((n) => (
                   <li key={n}>{n}</li>
                 ))}
               </ul>
+
+              {(p.links.live || p.links.repo) && (
+                <div className="gp-links">
+                  {p.links.live && (
+                    <a className="btn" href={p.links.live} target="_blank" rel="noreferrer">
+                      <span>{t.viewLive}</span>
+                    </a>
+                  )}
+                  {p.links.repo && (
+                    <a
+                      className="btn ghost"
+                      href={p.links.repo}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <span>{t.sourceCode}</span>
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
           </article>
         ))}

@@ -8,6 +8,43 @@ import './racetrack.css'
 
 gsap.registerPlugin(ScrollTrigger, MotionPathPlugin)
 
+// Parrilla: el KBC-74 lidera; lo persiguen un carro negro y uno plateado.
+// dx/dy separan cada carro de la línea ideal (en coordenadas locales del carro)
+// y el scrub más lento hace que los rivales se queden atrás al acelerar.
+const CARS = [
+  { number: '74', scrub: 0.5, dx: 0, dy: 0, livery: null },
+  {
+    number: '08',
+    scrub: 1.05,
+    dx: -96,
+    dy: 12,
+    livery: {
+      body: '#1b2027',
+      pods: '#10141a',
+      wings: '#0c0f13',
+      wingAccent: '#00c2b0',
+      stripe: '#00c2b0',
+      numberBg: '#00c2b0',
+      numberColor: '#0c1013',
+    },
+  },
+  {
+    number: '27',
+    scrub: 1.6,
+    dx: -188,
+    dy: -12,
+    livery: {
+      body: '#b6bdc7',
+      pods: '#828b96',
+      wings: '#14171c',
+      wingAccent: '#b6bdc7',
+      stripe: '#e8342a',
+      numberBg: '#14171c',
+      numberColor: '#f2f3f5',
+    },
+  },
+]
+
 // Convierte puntos en una curva suave (Catmull-Rom -> Bézier cúbica)
 function smoothPath(points) {
   if (points.length < 2) return ''
@@ -64,7 +101,7 @@ function buildPoints(container) {
 export default function RaceTrack() {
   const layerRef = useRef(null)
   const svgRef = useRef(null)
-  const carRef = useRef(null)
+  const carRefs = useRef([])
   const reduced = useReducedMotion()
 
   useEffect(() => {
@@ -73,22 +110,22 @@ export default function RaceTrack() {
     if (!layer || !container) return
 
     const mql = window.matchMedia('(min-width: 900px)')
-    let tween = null
-    let raf = 0
+    let tweens = []
+    let debounce = 0
 
     const teardown = () => {
-      if (tween) {
-        tween.scrollTrigger?.kill()
-        tween.kill()
-        tween = null
-      }
+      tweens.forEach((t) => {
+        t.scrollTrigger?.kill()
+        t.kill()
+      })
+      tweens = []
     }
 
     const build = () => {
       teardown()
       const svg = svgRef.current
-      const car = carRef.current
-      if (!svg || !car) return
+      const cars = carRefs.current.filter(Boolean)
+      if (!svg || !cars.length) return
 
       if (!mql.matches) {
         layer.style.display = 'none'
@@ -108,34 +145,46 @@ export default function RaceTrack() {
       svg.querySelectorAll('.rt-stroke').forEach((p) => p.setAttribute('d', d))
 
       if (reduced) {
-        gsap.set(car, { autoAlpha: 0 })
+        cars.forEach((car) => gsap.set(car, { autoAlpha: 0 }))
         return
       }
 
       const pathEl = svg.querySelector('#rt-main-path')
-      gsap.set(car, { autoAlpha: 1 })
       // El scrub termina cuando la meta está a media pantalla, para que el
       // cruce de la línea ocurra dentro del viewport
       const endScroll = Math.max(
         window.innerHeight,
         points[points.length - 1].y - window.innerHeight * 0.55
       )
-      tween = gsap.to(car, {
-        motionPath: {
-          path: pathEl,
-          align: pathEl,
-          alignOrigin: [0.5, 0.5],
-          autoRotate: true,
-        },
-        ease: 'none',
-        immediateRender: true,
-        scrollTrigger: {
-          trigger: container,
-          start: 'top top',
-          end: endScroll,
-          scrub: 0.6,
-        },
+      cars.forEach((car, i) => {
+        gsap.set(car, { autoAlpha: 1 })
+        tweens.push(
+          gsap.to(car, {
+            motionPath: {
+              path: pathEl,
+              align: pathEl,
+              alignOrigin: [0.5, 0.5],
+              autoRotate: true,
+            },
+            ease: 'none',
+            immediateRender: true,
+            scrollTrigger: {
+              trigger: container,
+              start: 'top top',
+              end: endScroll,
+              scrub: CARS[i].scrub,
+            },
+          })
+        )
       })
+    }
+
+    const rebuild = () => {
+      window.clearTimeout(debounce)
+      debounce = window.setTimeout(() => {
+        build()
+        ScrollTrigger.refresh()
+      }, 180)
     }
 
     // La primera construcción espera a que cargue la fuente y se asiente el layout
@@ -144,24 +193,25 @@ export default function RaceTrack() {
       ScrollTrigger.refresh()
     }, 120)
 
-    const ro = new ResizeObserver(() => {
-      cancelAnimationFrame(raf)
-      raf = requestAnimationFrame(() => {
-        window.clearTimeout(debounce)
-        debounce = window.setTimeout(() => {
-          build()
-          ScrollTrigger.refresh()
-        }, 180)
-      })
-    })
-    let debounce = 0
+    const ro = new ResizeObserver(rebuild)
     ro.observe(container)
+
+    // Reconstruye al cruzar el breakpoint y cuando la pestaña vuelve a ser visible
+    // (si cargó en segundo plano, el primer layout puede haber sido incorrecto)
+    const onVisible = () => {
+      if (!document.hidden) rebuild()
+    }
+    if (mql.addEventListener) mql.addEventListener('change', rebuild)
+    else mql.addListener(rebuild)
+    document.addEventListener('visibilitychange', onVisible)
 
     return () => {
       window.clearTimeout(initial)
       window.clearTimeout(debounce)
-      cancelAnimationFrame(raf)
       ro.disconnect()
+      if (mql.removeEventListener) mql.removeEventListener('change', rebuild)
+      else mql.removeListener(rebuild)
+      document.removeEventListener('visibilitychange', onVisible)
       teardown()
     }
   }, [reduced])
@@ -179,9 +229,21 @@ export default function RaceTrack() {
         {/* Línea central discontinua */}
         <path className="rt-stroke rt-centerline" d="" />
       </svg>
-      <div ref={carRef} className="rt-car">
-        <RaceCar className="rt-car-svg" />
-      </div>
+      {CARS.map((car, i) => (
+        <div
+          key={car.number}
+          ref={(el) => (carRefs.current[i] = el)}
+          className="rt-car"
+          style={{ zIndex: CARS.length - i }}
+        >
+          <div
+            className="rt-car-body"
+            style={{ transform: `translate(${car.dx}px, ${car.dy}px)` }}
+          >
+            <RaceCar className="rt-car-svg" number={car.number} livery={car.livery} />
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

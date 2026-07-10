@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { profile } from '../data/profile.js'
+import { useLang, pick } from '../i18n.jsx'
 import useReducedMotion from '../hooks/useReducedMotion.js'
 import './startinggrid.css'
 
@@ -10,6 +11,7 @@ export default function StartingGrid() {
   const [lightsOut, setLightsOut] = useState(false)
   const reduced = useReducedMotion()
   const doneRef = useRef(false)
+  const { lang, t } = useLang()
 
   // Secuencia del semáforo: se encienden 5 columnas y luego se apagan
   useEffect(() => {
@@ -64,12 +66,12 @@ export default function StartingGrid() {
       </div>
 
       <p className={`grid-status mono ${lightsOut ? 'go' : ''}`}>
-        {lightsOut ? "LIGHTS OUT — HAZ SCROLL PARA ARRANCAR" : 'FORMATION LAP…'}
+        {lightsOut ? t.lightsOut : t.formation}
       </p>
 
       <div className="grid-title-block">
         <p className="grid-pole mono">
-          <span>POLE POSITION</span>
+          <span>{t.polePosition}</span>
           <span className="grid-pole-num">#{profile.racingNumber}</span>
         </p>
         <h1 className="grid-name">
@@ -80,14 +82,14 @@ export default function StartingGrid() {
         <p className="grid-role">
           {profile.role} <span className="grid-role-sep">/</span> Backend Developer
         </p>
-        <p className="grid-tagline">{profile.tagline}</p>
+        <p className="grid-tagline">{pick(profile.tagline, lang)}</p>
 
         <div className="grid-ctas">
           <a className="btn" href="#driver" onClick={scrollTo('driver')}>
-            <span>Start Engine</span>
+            <span>{t.startEngine}</span>
           </a>
           <a className="btn ghost" href="#projects" onClick={scrollTo('projects')}>
-            <span>Enter Paddock</span>
+            <span>{t.enterPaddock}</span>
           </a>
         </div>
       </div>

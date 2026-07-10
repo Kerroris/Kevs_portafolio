@@ -88,12 +88,43 @@
   color: var(--muted);
 }
 
+/* Columna visual: circuito + captura opcional del sistema */
+.gp-visual {
+  display: grid;
+  gap: 16px;
+}
+
+.gp-shot {
+  margin: 0;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  padding: 8px;
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+}
+
+.gp-shot img {
+  width: 100%;
+  display: block;
+}
+
 /* Información del proyecto */
 .gp-info {
-  background: rgba(13, 15, 19, 0.92);
+  background: var(--panel-solid);
   border: 1px solid var(--line);
   padding: 28px;
   clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px));
+}
+
+.gp-links {
+  margin-top: 24px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.gp-links .btn {
+  padding: 12px 26px;
+  font-size: 12px;
 }
 
 .gp-name {
@@ -187,7 +218,7 @@
     direction: ltr;
     gap: 26px;
   }
-  .gp-circuit {
+  .gp-visual {
     max-width: 480px;
   }
 }

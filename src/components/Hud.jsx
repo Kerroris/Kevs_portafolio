@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import useReducedMotion from '../hooks/useReducedMotion.js'
+import { useLang } from '../i18n.jsx'
 import { sectors } from '../data/profile.js'
 import './hud.css'
 
@@ -17,12 +18,30 @@ function gearFor(speed) {
   return Math.min(g, 8)
 }
 
+function getInitialTheme() {
+  return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'
+}
+
 export default function Hud({ sectorIndex }) {
   const progressRef = useRef(null)
   const pctRef = useRef(null)
   const speedRef = useRef(null)
   const gearRef = useRef(null)
   const reduced = useReducedMotion()
+  const { lang, setLang } = useLang()
+  const [theme, setTheme] = useState(getInitialTheme)
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark'
+    setTheme(next)
+    if (next === 'light') document.documentElement.dataset.theme = 'light'
+    else document.documentElement.removeAttribute('data-theme')
+    try {
+      localStorage.setItem('theme', next)
+    } catch {
+      /* almacenamiento no disponible */
+    }
+  }
 
   useEffect(() => {
     if (reduced) return
@@ -81,15 +100,66 @@ export default function Hud({ sectorIndex }) {
         </span>
       </div>
 
-      <div className="hud-right mono" aria-hidden="true">
-        <span className="hud-speed" ref={speedRef}>
-          000
+      <div className="hud-right">
+        <span className="hud-telemetry mono" aria-hidden="true">
+          <span className="hud-speed" ref={speedRef}>
+            000
+          </span>
+          <span className="hud-unit">km/h</span>
+          <span className="hud-divider" />
+          <span className="hud-gear" ref={gearRef}>
+            N
+          </span>
         </span>
-        <span className="hud-unit">km/h</span>
-        <span className="hud-divider" />
-        <span className="hud-gear" ref={gearRef}>
-          N
-        </span>
+
+        <div className="hud-lang mono" role="group" aria-label="Idioma / Language">
+          <button
+            type="button"
+            className={lang === 'es' ? 'active' : ''}
+            onClick={() => setLang('es')}
+            aria-pressed={lang === 'es'}
+          >
+            ES
+          </button>
+          <button
+            type="button"
+            className={lang === 'en' ? 'active' : ''}
+            onClick={() => setLang('en')}
+            aria-pressed={lang === 'en'}
+          >
+            EN
+          </button>
+        </div>
+
+        <button
+          type="button"
+          className="hud-theme"
+          onClick={toggleTheme}
+          aria-label={theme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
+        >
+          {theme === 'dark' ? (
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="4.5" fill="currentColor" />
+              <g stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="12" y1="2" x2="12" y2="5" />
+                <line x1="12" y1="19" x2="12" y2="22" />
+                <line x1="2" y1="12" x2="5" y2="12" />
+                <line x1="19" y1="12" x2="22" y2="12" />
+                <line x1="4.9" y1="4.9" x2="7" y2="7" />
+                <line x1="17" y1="17" x2="19.1" y2="19.1" />
+                <line x1="4.9" y1="19.1" x2="7" y2="17" />
+                <line x1="17" y1="7" x2="19.1" y2="4.9" />
+              </g>
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"
+                fill="currentColor"
+              />
+            </svg>
+          )}
+        </button>
       </div>
     </header>
   )

@@ -64,9 +64,9 @@
   overflow: hidden;
   border: 1px solid var(--line);
   background:
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 32px),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 13px),
-    #0e1014;
+    repeating-linear-gradient(90deg, rgba(128, 137, 151, 0.12) 0 1px, transparent 1px 32px),
+    repeating-linear-gradient(0deg, rgba(128, 137, 151, 0.12) 0 1px, transparent 1px 13px),
+    var(--inset);
   margin-bottom: 16px;
 }
 

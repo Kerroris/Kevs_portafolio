@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { skills, contextMeta } from '../data/profile.js'
+import { useLang, pick } from '../i18n.jsx'
 import './telemetry.css'
 
 const CURRENT_YEAR = 2026
@@ -64,6 +65,8 @@ function stintYears(since) {
 }
 
 export default function Telemetry() {
+  const { lang, t } = useLang()
+
   return (
     <section className="sector" id="telemetry" data-track-anchor="left">
       <div className="sector-inner side-right">
@@ -71,30 +74,31 @@ export default function Telemetry() {
           <span className="sec-num">S2</span> Car Telemetry
         </div>
         <h2 className="sec-title" data-reveal>
-          Telemetría del <em>{'KBC-74'}</em>
+          {t.telTitle.pre}
+          <em>{t.telTitle.em}</em>
+          {t.telTitle.post}
         </h2>
         <p className="sec-desc" data-reveal>
-          Sin porcentajes inventados: cada tecnología muestra desde cuándo está en el
-          stint y en qué contexto se ha usado de verdad.
+          {t.telDesc}
         </p>
 
         <div className="tel-legend mono" data-reveal>
           {Object.entries(contextMeta).map(([key, meta]) => (
             <span className="tel-legend-item" key={key}>
-              <i style={{ background: meta.color }} /> {meta.label}
+              <i style={{ background: meta.color }} /> {pick(meta.label, lang)}
             </span>
           ))}
           <span className="tel-legend-item">
-            <i className="tel-legend-block" /> = 1 año en pista
+            <i className="tel-legend-block" /> {t.yearBlock}
           </span>
         </div>
       </div>
 
       <div className="tel-panels">
         {skills.map((group, gi) => (
-          <article className="panel tel-panel" key={group.channel} data-reveal>
+          <article className="panel tel-panel" key={group.unit} data-reveal>
             <header className="tel-panel-head">
-              <h3 className="tel-channel">{group.channel}</h3>
+              <h3 className="tel-channel">{pick(group.channel, lang)}</h3>
               <span className="tel-unit mono">{group.unit}</span>
             </header>
 
@@ -111,14 +115,14 @@ export default function Telemetry() {
                     <span
                       className="tel-blocks"
                       role="img"
-                      aria-label={`${years} años de uso, contexto ${meta.label}`}
+                      aria-label={`${years} — ${pick(meta.label, lang)}`}
                     >
                       {Array.from({ length: Math.min(years, 5) }).map((_, i) => (
                         <i key={i} style={{ background: meta.color }} />
                       ))}
                     </span>
                     <span className="tel-context mono" style={{ color: meta.color }}>
-                      {meta.label}
+                      {pick(meta.label, lang)}
                     </span>
                   </li>
                 )

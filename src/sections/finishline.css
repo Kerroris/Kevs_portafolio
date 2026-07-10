@@ -10,8 +10,9 @@
   right: 0;
   height: 64px;
   background:
-    repeating-conic-gradient(#e9ebee 0% 25%, #0b0d10 0% 50%);
+    repeating-conic-gradient(#e9ebee 0% 25%, #14171c 0% 50%);
   background-size: 32px 32px;
+  border-bottom: 1px solid var(--line);
   opacity: 0.9;
   animation: flag-wave 1.1s linear infinite;
   mask-image: linear-gradient(to bottom, black 60%, transparent);
@@ -73,7 +74,7 @@
 .field textarea {
   width: 100%;
   padding: 12px 14px;
-  background: #0e1014;
+  background: var(--inset);
   border: 1px solid var(--line);
   color: var(--text);
   font-family: inherit;
@@ -90,7 +91,7 @@
 
 .field input::placeholder,
 .field textarea::placeholder {
-  color: #566070;
+  color: var(--placeholder);
 }
 
 .finish-form .btn {

@@ -37,7 +37,7 @@
 }
 
 .rt-asphalt {
-  stroke: #171a20;
+  stroke: var(--asphalt);
   stroke-width: 42px;
 }
 
@@ -56,6 +56,11 @@
   height: 43px;
   will-change: transform;
   filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.55));
+}
+
+.rt-car-body {
+  width: 100%;
+  height: 100%;
 }
 
 .rt-car-svg {

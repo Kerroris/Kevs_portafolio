@@ -23,6 +23,19 @@
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
+    <!-- Aplica el tema guardado antes del primer render para evitar parpadeo -->
+    <script>
+      ;(function () {
+        try {
+          if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.dataset.theme = 'light'
+          }
+        } catch (e) {
+          /* almacenamiento no disponible */
+        }
+      })()
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

@@ -2,13 +2,21 @@
    BASE / TOKENS
    ============================================================ */
 :root {
-  --bg: #0b0d10;
-  --bg-2: #101318;
-  --panel: #14171d;
-  --panel-2: #191d24;
-  --line: #262b33;
-  --text: #eef0f3;
-  --muted: #9aa3af;
+  /* Tema oscuro (por defecto) */
+  --bg: #14181f;
+  --bg-2: #181d25;
+  --panel: #1c222b;
+  --panel-2: #232a34;
+  --line: #333b47;
+  --inset: #10141a;
+  --text: #f2f4f7;
+  --muted: #a6afbb;
+  --placeholder: #5f6975;
+  --hud-bg: rgba(18, 22, 28, 0.85);
+  --panel-solid: rgba(22, 27, 34, 0.93);
+  --asphalt: #21262e;
+  --outline-strong: rgba(242, 244, 247, 0.75);
+  --outline-soft: rgba(242, 244, 247, 0.42);
   --red: #e8342a;
   --red-dark: #b3271f;
   --yellow: #ffcc00;
@@ -18,6 +26,29 @@
   --font: 'Titillium Web', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --mono: ui-monospace, 'Cascadia Code', 'Cascadia Mono', Consolas, 'Courier New', monospace;
   --hud-h: 52px;
+}
+
+:root[data-theme='light'] {
+  --bg: #eef0f4;
+  --bg-2: #e5e8ee;
+  --panel: #ffffff;
+  --panel-2: #f3f5f8;
+  --line: #d3d8e0;
+  --inset: #e7eaef;
+  --text: #171b21;
+  --muted: #59626e;
+  --placeholder: #9aa3af;
+  --hud-bg: rgba(255, 255, 255, 0.88);
+  --panel-solid: rgba(255, 255, 255, 0.94);
+  --asphalt: #262b33;
+  --outline-strong: rgba(23, 27, 33, 0.6);
+  --outline-soft: rgba(23, 27, 33, 0.35);
+  --red: #d5261b;
+  --red-dark: #a81d14;
+  --yellow: #d09400;
+  --cyan: #0083b4;
+  --green: #0f9d63;
+  --purple: #8a4fd0;
 }
 
 * {
@@ -37,6 +68,7 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  transition: background 0.3s, color 0.3s;
 }
 
 ::selection {

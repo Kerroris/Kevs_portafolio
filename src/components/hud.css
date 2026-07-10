@@ -10,7 +10,7 @@
   justify-content: space-between;
   gap: 18px;
   padding: 0 22px;
-  background: rgba(11, 13, 16, 0.82);
+  background: var(--hud-bg);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--line);
@@ -136,9 +136,70 @@
   text-align: center;
 }
 
+.hud-telemetry {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Selector de idioma */
+.hud-lang {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  transform: skewX(-8deg);
+  overflow: hidden;
+}
+
+.hud-lang button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 5px 10px;
+  cursor: pointer;
+  transform: skewX(8deg);
+  transition: background 0.15s, color 0.15s;
+}
+
+.hud-lang button.active {
+  background: var(--red);
+  color: #fff;
+}
+
+.hud-lang button:not(.active):hover {
+  color: var(--text);
+}
+
+/* Botón de tema */
+.hud-theme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.hud-theme:hover {
+  color: var(--yellow);
+  border-color: var(--yellow);
+}
+
+.hud-theme svg {
+  width: 16px;
+  height: 16px;
+}
+
 @media (max-width: 720px) {
   .hud {
-    padding: 0 14px;
+    padding: 0 12px;
     gap: 10px;
   }
   .hud-sector-name,
@@ -148,5 +209,12 @@
   }
   .hud-center {
     max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .hud-telemetry,
+  .hud-pct {
+    display: none;
   }
 }

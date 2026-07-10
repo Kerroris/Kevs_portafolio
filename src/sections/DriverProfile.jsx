@@ -1,7 +1,10 @@
-import { profile } from '../data/profile.js'
+import { profile, interests } from '../data/profile.js'
+import { useLang, pick } from '../i18n.jsx'
 import './driverprofile.css'
 
 export default function DriverProfile() {
+  const { lang, t } = useLang()
+
   return (
     <section className="sector" id="driver" data-track-anchor="right">
       <div className="sector-inner">
@@ -9,7 +12,9 @@ export default function DriverProfile() {
           <span className="sec-num">S1</span> Driver Profile
         </div>
         <h2 className="sec-title" data-reveal>
-          El <em>piloto</em>
+          {t.driverTitle.pre}
+          <em>{t.driverTitle.em}</em>
+          {t.driverTitle.post}
         </h2>
 
         <article className="driver-card panel" data-reveal>
@@ -24,19 +29,19 @@ export default function DriverProfile() {
 
             <dl className="driver-specs">
               <div>
-                <dt>Rol</dt>
+                <dt>{t.specRole}</dt>
                 <dd>{profile.role}</dd>
               </div>
               <div>
-                <dt>Base</dt>
-                <dd>{profile.location}</dd>
+                <dt>{t.specBase}</dt>
+                <dd>{pick(profile.location, lang)}</dd>
               </div>
               <div>
-                <dt>Especialidad</dt>
-                <dd>{profile.specialty}</dd>
+                <dt>{t.specSpecialty}</dt>
+                <dd>{pick(profile.specialty, lang)}</dd>
               </div>
               <div>
-                <dt>Chasis</dt>
+                <dt>{t.specChassis}</dt>
                 <dd>{profile.chassis}</dd>
               </div>
             </dl>
@@ -44,16 +49,29 @@ export default function DriverProfile() {
         </article>
 
         <p className="driver-summary" data-reveal>
-          {profile.summary}
+          {pick(profile.summary, lang)}
         </p>
 
         <div className="driver-stats" data-reveal>
           {profile.stats.map((s) => (
-            <div className="driver-stat" key={s.label}>
+            <div className="driver-stat" key={s.value}>
               <span className="driver-stat-value">{s.value}</span>
-              <span className="driver-stat-label mono">{s.label}</span>
+              <span className="driver-stat-label mono">{pick(s.label, lang)}</span>
             </div>
           ))}
+        </div>
+
+        {/* Lo que me mueve fuera del teclado */}
+        <div className="driver-offtrack" data-reveal>
+          <p className="offtrack-label mono">{t.offTrack}</p>
+          <ul className="offtrack-list">
+            {interests.map((item) => (
+              <li className="offtrack-item" key={item.tag}>
+                <span className="offtrack-tag mono">{item.tag}</span>
+                <span className="offtrack-text">{pick(item.text, lang)}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>
