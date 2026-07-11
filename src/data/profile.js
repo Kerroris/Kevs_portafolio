@@ -27,8 +27,8 @@ export const profile = {
   email: 'kerroris@gmail.com',
   github: 'https://github.com/Kerroris',
   linkedin: 'https://www.linkedin.com/in/kerroris',
-  // [REEMPLAZAR] Coloca tu foto en public/driver.jpg y cambia esta ruta a '/driver.jpg'
-  photo: '/kkeevviinn.jpeg',
+  // Foto del piloto (el archivo vive en public/)
+  photo: '/yyyyyyy0.jpeg',
   summary: {
     es:
       'Desarrollador de software con experiencia en desarrollo web y backend. ' +
