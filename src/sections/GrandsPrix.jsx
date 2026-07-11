@@ -8,15 +8,39 @@ import './grandsprix.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
-// Trazados originales de cada circuito (viewBox 0 0 300 200)
+// Trazados de circuitos reales de F1, dibujados a mano (viewBox 0 0 300 200).
+// En src/data/profile.js cada proyecto elige el suyo con `circuit: '<clave>'`.
 const CIRCUITS = {
-  A: 'M60,150 C22,148 18,112 45,96 C72,80 58,52 92,40 C130,26 168,32 210,30 C258,28 282,56 270,86 C261,110 232,104 210,120 C186,138 238,168 198,181 C158,194 98,152 60,150 Z',
-  B: 'M40,168 L40,80 Q40,60 60,60 L138,60 Q158,60 158,42 Q158,24 178,24 L248,24 Q268,24 268,44 L268,88 Q268,108 248,108 L222,108 Q202,108 202,128 L202,148 Q202,168 182,168 Z',
-  C: 'M30,102 C30,62 68,40 108,54 C140,65 150,92 180,86 C216,79 204,36 244,36 C274,36 286,70 266,96 C246,122 272,150 236,165 C192,183 170,138 130,148 C90,158 30,142 30,102 Z',
+  suzuka: {
+    label: { es: 'Suzuka · Japón', en: 'Suzuka · Japan' },
+    d: 'M150,90 C125,93 108,94 95,95 C45,85 35,140 75,160 C115,180 150,150 140,120 L200,45 C225,20 275,35 268,70 C262,98 215,105 195,90 Z',
+  },
+  monza: {
+    label: { es: 'Monza · Italia', en: 'Monza · Italy' },
+    d: 'M62,178 L50,84 Q46,62 66,56 L118,42 Q130,38 142,44 L154,52 L190,40 Q206,34 220,44 L246,64 Q262,76 258,94 L252,112 Q240,146 206,156 L98,180 Q70,186 62,178 Z',
+  },
+  monaco: {
+    label: { es: 'Mónaco', en: 'Monaco' },
+    d: 'M40,130 Q32,112 50,104 L118,84 Q132,80 138,66 Q144,48 160,50 Q176,52 173,68 Q171,82 184,86 L216,94 Q232,98 244,90 L256,78 Q272,68 280,82 Q288,98 272,108 L240,128 Q228,136 212,134 L122,122 Q102,119 86,127 L64,138 Q46,146 40,130 Z',
+  },
+  spa: {
+    label: { es: 'Spa · Bélgica', en: 'Spa · Belgium' },
+    d: 'M60,60 Q46,52 54,40 Q62,28 76,36 L110,58 Q120,64 132,62 L200,50 Q216,47 228,56 L256,78 Q268,88 262,102 L240,148 Q232,164 214,162 L150,154 Q136,152 128,140 L112,112 Q106,100 94,94 L60,60 Z',
+  },
+  cota: {
+    label: { es: 'COTA · EE. UU.', en: 'COTA · USA' },
+    d: 'M150,170 L60,160 Q40,158 42,140 Q44,124 62,124 L96,122 Q112,120 118,106 Q124,92 116,80 Q108,68 118,58 Q128,48 142,54 L162,64 Q172,68 184,64 L228,50 Q246,44 254,60 Q260,74 248,84 L216,110 Q206,118 208,132 L212,146 Q214,164 196,168 L150,170 Z',
+  },
+  interlagos: {
+    label: { es: 'Interlagos · Brasil', en: 'Interlagos · Brazil' },
+    d: 'M80,150 Q50,148 46,120 Q42,96 68,88 L180,62 Q200,58 214,66 Q230,76 224,94 Q218,110 200,110 L150,108 Q134,108 130,122 Q126,136 140,142 L190,158 Q206,164 200,178 Q193,192 176,186 L80,150 Z',
+  },
 }
 
 function CircuitMap({ shape, round }) {
-  const d = CIRCUITS[shape] || CIRCUITS.A
+  const { lang } = useLang()
+  const circuit = CIRCUITS[shape] || CIRCUITS.suzuka
+  const d = circuit.d
   return (
     <div className="gp-circuit" aria-hidden="true">
       <svg viewBox="0 0 300 200">
@@ -26,6 +50,7 @@ function CircuitMap({ shape, round }) {
         <path className="gp-track-s3" d={d} pathLength="100" />
         <path className="gp-track-draw" d={d} pathLength="100" />
       </svg>
+      <span className="gp-circuit-name mono">{pick(circuit.label, lang)}</span>
       <span className="gp-round mono">R{round}</span>
     </div>
   )

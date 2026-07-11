@@ -48,6 +48,9 @@ export const ui = {
     phEmail: 'Para responderte por radio',
     phMessage: 'Cuéntame del proyecto, la vacante o la idea',
     transmit: 'Transmitir',
+    transmitting: 'Transmitiendo…',
+    sentOk: 'Mensaje recibido en boxes. Te respondo en cuanto salga de la curva.',
+    sentError: 'La radio falló. Escríbeme directo a',
     emailTag: 'CORREO',
     quote: {
       a: 'El software, como las carreras, se gana en los detalles: en la vuelta ',
@@ -101,6 +104,9 @@ export const ui = {
     phEmail: 'So I can radio you back',
     phMessage: 'Tell me about the project, the role or the idea',
     transmit: 'Transmit',
+    transmitting: 'Transmitting…',
+    sentOk: 'Message received in the pits. I will get back to you right after this corner.',
+    sentError: 'Radio failure. Email me directly at',
     emailTag: 'EMAIL',
     quote: {
       a: 'Software, like racing, is won in the details: in the lap ',

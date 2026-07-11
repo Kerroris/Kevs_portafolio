@@ -5,18 +5,37 @@ import './finishline.css'
 
 export default function FinishLine() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
+  const [status, setStatus] = useState('idle') // idle | sending | ok | error
   const { t } = useLang()
 
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
-  // Sin backend: arma el correo en el cliente del visitante
-  const onSubmit = (e) => {
+  // Envío directo al correo vía FormSubmit (sin backend propio).
+  // La PRIMERA vez que alguien envíe, FormSubmit manda un correo de
+  // activación a profile.email: hay que dar clic en "Activate" una sola vez.
+  const onSubmit = async (e) => {
     e.preventDefault()
-    const subject = encodeURIComponent(`${t.mailSubject} ${form.name || t.visitor}`)
-    const body = encodeURIComponent(
-      `${form.message}\n\n— ${form.name}${form.email ? ` (${form.email})` : ''}`
-    )
-    window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`
+    if (status === 'sending') return
+    setStatus('sending')
+    try {
+      const res = await fetch(`https://formsubmit.co/ajax/${profile.email}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          _subject: `${t.mailSubject} ${form.name || t.visitor}`,
+          _template: 'table',
+          _captcha: 'false',
+        }),
+      })
+      if (!res.ok) throw new Error(`FormSubmit ${res.status}`)
+      setStatus('ok')
+      setForm({ name: '', email: '', message: '' })
+    } catch {
+      setStatus('error')
+    }
   }
 
   return (
@@ -46,6 +65,7 @@ export default function FinishLine() {
             <input
               type="text"
               name="name"
+              required
               value={form.name}
               onChange={onChange}
               placeholder={t.phName}
@@ -58,6 +78,7 @@ export default function FinishLine() {
             <input
               type="email"
               name="email"
+              required
               value={form.email}
               onChange={onChange}
               placeholder={t.phEmail}
@@ -77,9 +98,21 @@ export default function FinishLine() {
             />
           </label>
 
-          <button className="btn" type="submit">
-            <span>{t.transmit}</span>
+          <button className="btn" type="submit" disabled={status === 'sending'}>
+            <span>{status === 'sending' ? t.transmitting : t.transmit}</span>
           </button>
+
+          {status === 'ok' && (
+            <p className="form-status ok mono" role="status">
+              {t.sentOk}
+            </p>
+          )}
+          {status === 'error' && (
+            <p className="form-status error mono" role="alert">
+              {t.sentError}{' '}
+              <a href={`mailto:${profile.email}`}>{profile.email}</a>
+            </p>
+          )}
         </form>
 
         <div className="finish-links" data-reveal>

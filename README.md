@@ -80,9 +80,22 @@ vercel
 | **Vueltas / longitud de cada GP** | En `src/data/profile.js` → `projects` (`laps`, `length`) son datos decorativos; cámbialos si quieres |
 | **Dominio canónico** | Cuando tengas dominio, agrega `<link rel="canonical" href="https://tudominio.com" />` en `index.html` y actualiza las URLs de `og:image` a absolutas |
 
+## Formulario de contacto (envío directo)
+
+El formulario envía los mensajes **directo a tu correo** usando [FormSubmit](https://formsubmit.co) (gratuito, sin cuenta ni backend).
+
+**Activación (una sola vez):** la primera vez que alguien envíe el formulario, FormSubmit mandará un correo de confirmación a `kerroris@gmail.com` con un botón **Activate**. Dale clic y desde ese momento todos los mensajes te llegan a la bandeja. Si el envío falla, el visitante ve un aviso con tu correo como respaldo.
+
+## Circuitos disponibles
+
+Cada proyecto muestra un circuito real de F1. Se elige en `src/data/profile.js` con `circuit: '<clave>'`:
+
+`suzuka` (Japón, con su cruce en 8) · `monza` (Italia) · `monaco` · `spa` (Bélgica) · `cota` (EE. UU.) · `interlagos` (Brasil)
+
+Actualmente: Cobranza → Suzuka, Archivo Digital → Monza, POS → Mónaco.
+
 ## Notas de contenido
 
 - Los textos bilingües viven como objetos `{ es: '…', en: '…' }` en `src/data/profile.js`; los rótulos de interfaz en `src/i18n.jsx`. Para editar un texto, cambia ambos idiomas.
-- El formulario de contacto no tiene backend: arma un `mailto:` hacia `kerroris@gmail.com` con lo que escriba el visitante. Si luego quieres envío real, conecta un servicio tipo Formspree y cambia `onSubmit` en `src/sections/FinishLine.jsx`.
 - El nivel de inglés está como **B2** (así se pidió para el portafolio; el CV dice B1 — unifica el que corresponda en `src/data/profile.js`).
 - Los carros rivales (negro #08 y plata #27) se configuran en `src/components/RaceTrack.jsx` (constante `CARS`): colores, números, separación y retraso de scrub.

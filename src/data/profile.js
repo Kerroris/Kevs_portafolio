@@ -156,13 +156,15 @@ export const contextMeta = {
 //   links.repo  -> [REEMPLAZAR] URL del repositorio en GitHub (déjala '' si es privado)
 //   image       -> [REEMPLAZAR] captura del sistema, p. ej. '/projects/cobranza.png'
 //                  (crea la carpeta public/projects/ y coloca ahí tus imágenes)
+//   circuit     -> circuito real de F1 que ilustra el proyecto. Disponibles:
+//                  'suzuka' | 'monza' | 'monaco' | 'spa' | 'cota' | 'interlagos'
 export const projects = [
   {
     round: '01',
     gpName: { es: 'GP de Cobranza', en: 'Collections GP' },
     title: { es: 'Sistema de Cobranza', en: 'Collections System' },
-    laps: '58',
-    length: '5.4 km',
+    laps: '53',
+    length: '5.8 km',
     stack: ['CodeIgniter', 'PHP', 'React', 'SQL Server'],
     role: { es: 'Backend Developer', en: 'Backend Developer' },
     description: {
@@ -191,14 +193,14 @@ export const projects = [
     },
     links: { live: '', repo: '' },
     image: '',
-    circuit: 'A',
+    circuit: 'suzuka',
   },
   {
     round: '02',
     gpName: { es: 'GP Archivo Digital', en: 'Digital Archive GP' },
     title: { es: 'Archivo Digital RH', en: 'HR Digital Archive' },
-    laps: '44',
-    length: '4.1 km',
+    laps: '53',
+    length: '5.79 km',
     stack: ['Laravel', 'MySQL'],
     role: { es: 'Full Stack Developer', en: 'Full Stack Developer' },
     description: {
@@ -227,14 +229,14 @@ export const projects = [
     },
     links: { live: '', repo: '' },
     image: '',
-    circuit: 'B',
+    circuit: 'monza',
   },
   {
     round: '03',
     gpName: { es: 'GP Restaurantes', en: 'Restaurants GP' },
     title: { es: 'Plataforma POS / Restaurantes', en: 'POS / Restaurant Platform' },
-    laps: '61',
-    length: '6.2 km',
+    laps: '78',
+    length: '3.34 km',
     stack: ['SaaS', 'Multiempresa', 'POS'],
     role: { es: 'Arquitectura y desarrollo', en: 'Architecture & development' },
     description: {
@@ -263,7 +265,7 @@ export const projects = [
     },
     links: { live: '', repo: '' },
     image: '',
-    circuit: 'C',
+    circuit: 'monaco',
   },
 ]
 
